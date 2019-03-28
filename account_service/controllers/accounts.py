@@ -23,6 +23,17 @@ def get_account(account_number):
                    customerId=account.customer_id)
 
 
+@accounts.route('/<int:account_number>', methods=['PUT'])
+def update_account(account_number):
+    body = request.get_json()
+
+    commands.update_account(account_number=account_number,
+                            status=body['status'],
+                            account_repository=current_app.account_repository)
+
+    return jsonify(), HTTPStatus.OK
+
+
 @accounts.route('/', methods=['POST'])
 def post_account():
     if not request.is_json:
@@ -63,6 +74,10 @@ def customer_not_found(e):
 def schema_error(e):
     return jsonify(message=str(e)), HTTPStatus.BAD_REQUEST
 
+# @accounts.errorhandler(Exception)
+# def schema_error(e):
+#     print(str(e))
+#     return jsonify(message=str(e)), HTTPStatus.BAD_REQUEST
 
 class ContentTypeError(RuntimeError):
     pass
